@@ -1,5 +1,18 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  RegisterLink,
+  LoginLink,
+} from "@kinde-oss/kinde-auth-nextjs/components";
 
 export default function Home() {
-  return <main>Project Setup</main>;
+  return (
+    <main>
+      <Button asChild>
+        <LoginLink>Login</LoginLink>
+      </Button>
+      <Button asChild>
+        <RegisterLink>Sign up</RegisterLink>
+      </Button>
+    </main>
+  );
 }
