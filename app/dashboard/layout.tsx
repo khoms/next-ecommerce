@@ -62,6 +62,7 @@ export default async function DashboardLayout({
           </DropdownMenuContent>
         </DropdownMenu>
       </header>
+      <main className="mt-5">{children}</main>
     </div>
   );
 }
