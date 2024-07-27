@@ -22,3 +22,31 @@ model User {
   profileImage String
   created_at DateTime @default(now())
   }
+
+
+  model product{
+    id String @id @default(uuid())
+    name String
+    description String
+    status ProductStatus
+    price Int
+    images String[]
+    category Category
+
+    createdAt DateTime @default(now())
+  }
+
+
+
+  enum ProductStatus{
+    draft
+    published
+    archived
+  }
+
+
+  enum Category{
+    men
+    women
+    kids
+  }
