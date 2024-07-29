@@ -24,8 +24,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import prisma from "@/app/lib/db";
+import Image from "next/image";
 
-export default function ProductsRoute() {
+async function getData() {
+  const data = await prisma.product.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return data;
+}
+
+export default async function ProductsRoute() {
+  const data = await getData();
   return (
     <>
       <div className="flex items-center justify-end">
@@ -56,29 +68,40 @@ export default function ProductsRoute() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell>
-                  <UserIcon className="size-16" />
-                </TableCell>
-                <TableCell>Nike Air Jordan</TableCell>
-                <TableCell>$299.00</TableCell>
-                <TableCell>2024-04-08</TableCell>
-                <TableCell className="text-right flex gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="icon" variant="ghost">
-                        <MoreHorizontal className="size-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
+              {data.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    <Image
+                      src={item.images[0]}
+                      alt="Product Img"
+                      width={64}
+                      height={64}
+                      className="rounded-md object-cover h-16 w-16"
+                    />
+                    {/* <UserIcon className="size-16" />  */}
+                  </TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>${item.price}</TableCell>
+                  <TableCell>
+                    {new Intl.DateTimeFormat("en-US").format(item.createdAt)}
+                  </TableCell>
+                  <TableCell className="text-right flex gap-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="icon" variant="ghost">
+                          <MoreHorizontal className="size-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </CardContent>

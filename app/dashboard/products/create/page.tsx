@@ -32,6 +32,7 @@ import { productSchema } from "@/lib/zodSchemas";
 import { useState } from "react";
 import Image from "next/image";
 import { categories } from "@/lib/categories";
+import { SubmitButton } from "@/app/components/SubmitButtons";
 
 export default function CreateProductPage() {
   const [lastResult, action] = useFormState(createProduct, undefined);
@@ -199,7 +200,7 @@ export default function CreateProductPage() {
         </CardContent>
 
         <CardFooter className="flex gap-2 justify-end">
-          <Button>Save Product</Button>
+          <SubmitButton />
 
           <Button variant="secondary">Cancel</Button>
         </CardFooter>
