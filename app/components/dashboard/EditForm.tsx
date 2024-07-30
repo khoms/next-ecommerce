@@ -1,6 +1,6 @@
 "use client";
 
-import { createProduct } from "@/app/actions";
+import { createProduct, editProduct } from "@/app/actions";
 import { UploadDropzone } from "@/app/lib/uploadthing";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,20 +22,34 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { categories } from "@/lib/categories";
 
 import { ChevronLeft, XIcon } from "lucide-react";
 import Link from "next/link";
+import { SubmitButton } from "../SubmitButtons";
+import { parseWithZod } from "@conform-to/zod";
 import { useFormState } from "react-dom";
 import { useForm } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
 import { productSchema } from "@/lib/zodSchemas";
 import { useState } from "react";
 import Image from "next/image";
-import { categories } from "@/lib/categories";
-import { SubmitButton } from "@/app/components/SubmitButtons";
+import { $Enums } from "@prisma/client";
 
-export default function CreateProductPage() {
-  const [lastResult, action] = useFormState(createProduct, undefined);
+interface iAppProps {
+  data: {
+    id: string;
+    name: string;
+    description: string;
+    status: $Enums.ProductStatus;
+    price: number;
+    images: string[];
+    category: $Enums.Category;
+    isFeatured: boolean;
+  };
+}
+
+export function EditForm({ data }: iAppProps) {
+  const [lastResult, action] = useFormState(editProduct, undefined);
   const [form, fields] = useForm({
     lastResult,
     onValidate({ formData }) {
@@ -44,7 +58,7 @@ export default function CreateProductPage() {
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
   });
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>(data.images);
 
   const handleDelete = (index: number) => {
     setImages(images.filter((_, i) => i !== index));
@@ -52,19 +66,20 @@ export default function CreateProductPage() {
 
   return (
     <form id={form.id} onSubmit={form.onSubmit} action={action}>
+      <input type="hidden" name="productId" value={data.id} />
       <div className="flex items-center gap-4">
         <Button variant="outline" asChild>
           <Link href="/dashboard/products">
             <ChevronLeft />
           </Link>
         </Button>
-        <h1 className="text-2xl font-semibold">New Product</h1>
+        <h1 className="text-2xl font-semibold">Edit Product</h1>
       </div>
 
       <Card className="mt-5">
         <CardHeader>
-          <CardTitle>Add New Product</CardTitle>
-          <CardDescription>You can add new product here</CardDescription>
+          <CardTitle>Product Details</CardTitle>
+          <CardDescription>You can edit existing product here</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-6">
@@ -74,7 +89,7 @@ export default function CreateProductPage() {
                 placeholder="Product Name"
                 key={fields.name.key}
                 name={fields.name.name}
-                defaultValue={fields.name.initialValue}
+                defaultValue={data.name}
               />
               <p className="text-red-400">{fields.name.errors}</p>
             </div>
@@ -85,7 +100,7 @@ export default function CreateProductPage() {
                 placeholder="Enter Product Description Here...."
                 key={fields.description.key}
                 name={fields.description.name}
-                defaultValue={fields.description.initialValue}
+                defaultValue={data.description}
               />
               <p className="text-red-400">{fields.description.errors}</p>
             </div>
@@ -97,7 +112,7 @@ export default function CreateProductPage() {
                 type="number"
                 key={fields.price.key}
                 name={fields.price.name}
-                defaultValue={fields.price.initialValue}
+                defaultValue={data.price}
               />
               <p className="text-red-400">{fields.price.errors}</p>
             </div>
@@ -107,7 +122,7 @@ export default function CreateProductPage() {
               <Switch
                 key={fields.isFeatured.key}
                 name={fields.isFeatured.name}
-                defaultValue={fields.isFeatured.initialValue}
+                checked={data.isFeatured}
               />
               <p className="text-red-400">{fields.isFeatured.errors}</p>
             </div>
@@ -117,7 +132,7 @@ export default function CreateProductPage() {
               <Select
                 key={fields.status.key}
                 name={fields.status.name}
-                defaultValue={fields.status.initialValue}
+                defaultValue={data.status}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Status" />
@@ -138,7 +153,7 @@ export default function CreateProductPage() {
               <Select
                 key={fields.category.key}
                 name={fields.category.name}
-                defaultValue={fields.category.initialValue}
+                defaultValue={data.category}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Category" />
@@ -153,7 +168,7 @@ export default function CreateProductPage() {
                   })}
                 </SelectContent>
               </Select>
-              <p className="text-red-400">{fields.status.errors}</p>
+              <p className="text-red-400">{fields.category.errors}</p>
             </div>
 
             <div className="flex flex-col gap-3">
@@ -163,7 +178,7 @@ export default function CreateProductPage() {
                 value={images}
                 key={fields.images.key}
                 name={fields.images.name}
-                defaultValue={fields.images.initialValue as any}
+                defaultValue={data.images as any}
               />
               {images.length > 0 ? (
                 <div className="flex gap-5">
@@ -200,7 +215,7 @@ export default function CreateProductPage() {
         </CardContent>
 
         <CardFooter className="flex gap-2 justify-end">
-          <SubmitButton text="Create Product" />
+          <SubmitButton text="Update Product" />
 
           <Button variant="secondary">Cancel</Button>
         </CardFooter>
