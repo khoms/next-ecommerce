@@ -37,6 +37,15 @@ model User {
     createdAt DateTime @default(now())
   }
 
+  model Banner{
+    id String @id @default(uuid())
+    title String
+    imageUrl String
+    createdAt DateTime @default(now())
+  }
+
+
+
 
 
   enum ProductStatus{
