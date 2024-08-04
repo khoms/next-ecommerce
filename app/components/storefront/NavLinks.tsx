@@ -2,9 +2,9 @@ import Link from "next/link";
 
 const navLinks = [
   { id: 1, name: "Home", href: "/" },
-  { id: 1, name: "All Products", href: "/producrs/all" },
-  { id: 1, name: "Men", href: "/products/men" },
-  { id: 1, name: "Women", href: "/products/women" },
+  { id: 2, name: "All Products", href: "/producrs/all" },
+  { id: 3, name: "Men", href: "/products/men" },
+  { id: 4, name: "Women", href: "/products/women" },
 ];
 
 export function Navlinks() {

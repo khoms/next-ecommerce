@@ -1,5 +1,13 @@
-import { Navbar } from "../components/storefront/Navbar";
+import Categoryselection from "../components/storefront/CategorySelection";
+import FeaturedProducts from "../components/storefront/FeaturedProducts";
+import Hero from "../components/storefront/Hero";
 
 export default function IndexPage() {
-  return <>THis is index page</>;
+  return (
+    <>
+      <Hero />
+      <Categoryselection />
+      <FeaturedProducts />
+    </>
+  );
 }
