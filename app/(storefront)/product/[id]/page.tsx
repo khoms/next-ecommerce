@@ -1,3 +1,4 @@
+import { addItem } from "@/app/actions";
 import { ImageSlider } from "@/app/components/storefront/Image Slider";
 import prisma from "@/app/lib/db";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ export default async function Producteoute({
   params: { id: string };
 }) {
   const data = await getData(params.id);
+  const addProductToShoppingCart = await addItem.bind(null, data.id);
 
   return (
     <>
@@ -46,9 +48,12 @@ export default async function Producteoute({
             <StarIcon className="size-4 text-yellow-500 fill-yellow-500" />
           </div>
           <p className="text-base text-gray-700 mt-6">{data.description}</p>
-          <Button size="lg" className="w-full mt-5">
-            <ShoppingBag className="mr-4 h-5 w-5 " /> Add to Cart
-          </Button>
+
+          <form action={addProductToShoppingCart}>
+            <Button size="lg" className="w-full mt-5">
+              <ShoppingBag className="mr-4 h-5 w-5 " /> Add to Cart
+            </Button>
+          </form>
         </div>
       </div>
     </>
